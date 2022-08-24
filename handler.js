@@ -58,6 +58,24 @@ app.post("/users", async function (req, res) {
   }
 });
 
+app.delete("/users/:userId", async function (req, res) {
+  const params = {
+    TableName: USERS_TABLE,
+    Key: {
+      userId: req.params.userId,
+    },
+  };
+
+  try {
+    await dynamoDbClient.delete(params).promise();
+    res.json({message: 'Successfully deleted'});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Could not remove user" });
+  }
+
+});
+
 app.use((req, res, next) => {
   return res.status(404).json({
     error: "Not Found",
